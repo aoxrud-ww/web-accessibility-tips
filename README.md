@@ -99,7 +99,7 @@ We can provide additonal context to a label without making it visible. It keeps 
 Sometimes we have certain things that we do not want to make available to screen reders because that same information is accessible elsewhere.
 To hide blocks from screen reader, use the [aria-hidden](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques/Using_the_aria-hidden_attribute) attribute.
 
-```
+```html
 <div aria-hidden='true'>
 The information in here will be visible but not accessible via screen readers
 </div>
