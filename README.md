@@ -51,7 +51,7 @@ Semantic HTML is the foundation of accessibility in a web application. Using the
 
 <!-- better -->
 <nav class="sidebar">
-  <ul>
+  <ul aria-label="Main Navigation">
     <li><a href=''>Link 1</a></li>
   </ul>
 </nav>
