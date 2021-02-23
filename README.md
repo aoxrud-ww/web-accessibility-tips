@@ -1,4 +1,4 @@
-# Accessibility
+# Web Accessibility Tips
 
 
 Semantic HTML is the foundation of accessibility in a web application. Using the various [HTML elements](https://developer.mozilla.org/en-US/docs/Web/HTML/Element) to reinforce the meaning of information in our websites will often give us accessibility for free.
@@ -62,6 +62,11 @@ Most of the semantic HTML elements can be expressed as regular `div` elements wi
 However, more often than not, screen readers don't handle these "faked" elements the same way.
 And you'll need to add additional functionality to get the same behavior like screeb reader announcements and keyboard functionality.
 
+# Different Methods of Navigating a Page
+- Mouse users
+- Touch-screen users
+- Keyboard navigation
+- Screen reader
 
 
 # CSS Utility
@@ -88,6 +93,67 @@ We can provide additonal context to a label without making it visible. It keeps 
 ```html
 <a href='#'>View more <span class='visuallyhidden'>products in Healthy Snacks</span></a>
 ```
+
+# Hiding Elements
+
+Sometimes we have certain things that we do not want to make available to screen reders because that same information is accessible elsewhere.
+To hide blocks from screen reader, use the [aria-hidden](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques/Using_the_aria-hidden_attribute) attribute.
+
+```
+<div aria-hidden='true'>
+The information in here will be visible but not accessible via screen readers
+</div>
+```
+
+# Images
+
+### Overview
+All images that provide context to the page should have thoughtful descriptions.
+
+Imagine you have closed your eyes and have never seen the page before:
+- How would someone describe the image to you?
+- What are the important bits to help with the context of the page?
+- Avoid using words like: "image", "illustration", "picture", etc..
+  
+### Inline Images
+Any image that uses the `<img>` should have an `alt` property.
+If the image is an illustration and doesn't provide context to the page, the `alt` can be an empty string.
+If the image provides additional context to the page, it needs a thoughful description.
+
+```html
+<img src='' alt='' />
+```
+
+
+## Background Images
+Most background images are used for decoration only and do not need alternate text.
+However, sometimes background image includes important information.
+Consider using a hidden div that contains a description of the image.
+
+Alternatively, refactor the code to use `<img>` tags.
+
+```html
+<div style="background-image: url(...)">
+  <span class='visuallyhidden'>description of svg</span>
+</div>
+```
+
+### SVG
+Add a `<title>` node inside of the svg that describes the image.
+Hide the svg via `aria-hidden="true"` and add a visually hidden div that describes it.
+
+```html
+<svg>
+  <title>description of svg</title>
+</svg>
+```
+
+or
+```html
+<span class='visuallyhidden'>description of svg</span>
+<svg aria-hidden='true'></svg>
+```
+
 
 # Input Labels
 Each input should have a `<label>` associated with it:
