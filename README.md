@@ -1,10 +1,16 @@
 # Web Accessibility Tips
 
+The following accessibility tips address technical issues with building accessible web pages.
+It does not address how content should be written.
 
+
+## Semantic HTML
 Semantic HTML is the foundation of accessibility in a web application. Using the various [HTML elements](https://developer.mozilla.org/en-US/docs/Web/HTML/Element) to reinforce the meaning of information in our websites will often give us accessibility for free.
 
 
 ### Lists
+
+Any time there is content that would benefit from announcing how many items are there, use a list.
 ```html
 <!-- bad -->
 <div>
@@ -19,22 +25,31 @@ Semantic HTML is the foundation of accessibility in a web application. Using the
 </ul>
 ```
 
-### Links
+### Links and Buttons
+Non-interactive elements like `div` with click listeners are not recognized by screen readers and will be skipped.
+- If there is a url, use `<a href='url'>` 
+- If there is no url, use a `<button>`
+
 ```html
 <!-- bad -->
-<div onclick="handleClick()">click me</div>
+<div onclick="handleClick()">read more</div>
 
 <!-- good -->
-<a href=''>click me</a>
+<a href=''>read more</a>
+<button onclick="handleClick()">open description</a>
 ```
 
-### Regions
+### Landmarks
+Using the correct landmark elements helps assistive technologies navigate the page more efficiently.
+See full [list of available landmarks in HTML5](https://www.w3.org/TR/wai-aria-practices/examples/landmarks/HTML5.html)
 ```html
 <!-- bad -->
 <div class="sidebar"></div>
+<div class="main-content"></div>
 
 <!-- good -->
 <aside class="sidebar"></aside>
+<main class="main-content"></main>
 ```
 
 ### Navigation
@@ -62,12 +77,23 @@ Most of the semantic HTML elements can be expressed as regular `div` elements wi
 However, more often than not, screen readers don't handle these "faked" elements the same way.
 And you'll need to add additional functionality to get the same behavior like screeb reader announcements and keyboard functionality.
 
-# Different Methods of Navigating a Page
-- Mouse users
-- Touch-screen users
-- Keyboard navigation
-- Screen reader
 
+# Different Methods of Navigating a Page
+
+- **Mouse users**
+  - uses mouse to navigate page
+- **Touch-screen users**
+  - devices like a phone/tablet.
+  - tappable areas should be large enough (at least 32px x 32px)
+- **Keyboard navigation**
+  - uses keyboard to navigate the site, mostly through the Tab key
+- **Screen reader**
+  - assistive technology that reads the page
+  - offers a "virtual cursor" where it highlights areas on the page with a virtual cursor
+  - navigates page using special keyboard keys
+  
+When building a feature consider how it can be navigated through multiple mediums. For example, a common pattern is to use the mouse over state to reveal a menu.
+That sort of functionality works well for mouse users but it's almost inaccessible by touch/keyboard/screen readers.
 
 # CSS Utility
 There are many instances where the UI has repetive text that doesn't change, but the visual content/styling around it gives it context.
@@ -78,7 +104,7 @@ If there are buttons that say "View more" and nothing else, then they don't full
 We can provide additonal context to a label without making it visible. It keeps the design tidy and makes it more accessible.
 
 ```css
-.visuallyhidden {
+.visually-hidden {
   border: 0;
   clip: rect(0 0 0 0);
   height: 1px;
@@ -91,7 +117,7 @@ We can provide additonal context to a label without making it visible. It keeps 
 ```
 
 ```html
-<a href='#'>View more <span class='visuallyhidden'>products in Healthy Snacks</span></a>
+<a href='#'>View more <span class='visually-hidden'>products in Healthy Snacks</span></a>
 ```
 
 # Hiding Elements
@@ -134,7 +160,7 @@ Alternatively, refactor the code to use `<img>` tags.
 
 ```html
 <div style="background-image: url(...)">
-  <span class='visuallyhidden'>description of svg</span>
+  <span class='visually-hidden'>description of svg</span>
 </div>
 ```
 
@@ -150,7 +176,7 @@ Hide the svg via `aria-hidden="true"` and add a visually hidden div that describ
 
 or
 ```html
-<span class='visuallyhidden'>description of svg</span>
+<span class='visually-hidden'>description of svg</span>
 <svg aria-hidden='true'></svg>
 ```
 
@@ -165,11 +191,11 @@ Each input should have a `<label>` associated with it:
 Sometimes we don't want to visually display the `<label>` so we can **visually hide** the element:
 
 ```html
-<label for="firstname">First name:</label>
-<input type="text" name="firstname" id="firstname" class="visuallyhidden">
+<label for="firstname" class="visually-hidden">First name:</label>
+<input type="text" name="firstname" id="firstname">
 ```
 
-> Note: we are using the `visuallyhidden` class defined in an earlier section
+> Note: we are using the `visually-hidden` class defined in an earlier section
 
 
 # Input Validation
@@ -211,6 +237,21 @@ updateResultsCount(10, "apple")
 **Beware** that the container that has `aria-live` must exist on page load. If it gets added dynamically after page load, it will not be picked up by some screen readers.
 
 
+# Collapsible/Expandable Content
+
+A common design pattern is to have a button that reveals some section, like an accordion.
+The button that performs the action of revealing a section should be annotated with the [aria-expanded](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/button_role#associated_aria_roles_states_and_properties)
+
+```html
+<!-- collapsed state -->
+<button aria-expanded="false">Learn more about foobar</button>
+<div class="collapsed"></div>
+
+<!-- expanded state -->
+<button aria-expanded="true">Learn more about foobar</button>
+<div class="expanded">Lorem ipsum...</div>
+```
+
 # Focus
 
 There may be a scenario where the focus need to be moved to a specific component on the page.
@@ -229,8 +270,9 @@ This approach presents a few problems:
 - It may be read out loud which may not be a desired behavior 
   
 A way to move the focus but not force the screen reader to read it outloud is to create a empty component that can receive focus.
+Then we can focus to that element and the blur out of it. That will effectively reset the focus to below the empty component.
 ```html
-<a class='visuallyhidden' tabindex="-1" id='resetFocus'></a>
+<a class='visually-hidden' tabindex="-1" id='resetFocus'></a>
 <div tabindex="-1">my content here</div>
 ```
 ```js
@@ -241,8 +283,25 @@ resetFocusAnchor.blur();
 
 By following this approach, the focus will be moved after the `<a>` so be primed for the next `Tab` keypress. 
 
+# Layout and the Tab Order
+
+We can specify the `tabindex` of each element in a page by assigning a number that indicates their tab order.
+However, that approach is hard to maintain, specially in a dynamic page.
+
+A more forgiving way is to let the browser dictate the tab order. The tab order often follows the html structure:
+```html
+<a href=''>first selected</a>
+<a href=''>second selected</a>
+<a href=''>third selected</a>
+```
+
+Designs are sometimes complex and there are elements on the page that are far apart from each other but appear visually together (usually via css absolute positioning).
+This causes the tab order to feel unnatural. Consider grouping related elements together. 
 
 
 ## Tooling
 - [eslint-plugin-jsx-a11y](https://github.com/jsx-eslint/eslint-plugin-jsx-a11y) - Static AST checker for accessibility rules on JSX elements.
+  - informs about missing properties and/or their values
 - [Chrome Lighthouse](https://developers.google.com/web/tools/lighthouse) - Audits for performance, accessibility, progressive web apps, SEO and more.
+  - helps
+
