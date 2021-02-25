@@ -1,7 +1,28 @@
 # Web Accessibility Tips
 
-The following accessibility tips address technical issues with building accessible web pages.
-It does not address how content should be written.
+The following accessibility tips and tricks address some technical ways to building accessible web pages. 
+There are disagreements within assistive technologies on how to handle the [WAI-ARIA](https://www.w3.org/TR/wai-aria) specificiations.
+There are many opinons on how to build accessible web pages and the best method to use.
+The following tips and tricks are how I managed to create accessible web pages that work on most modern assistive technologies.
+
+## Different Methods of Navigating a Page
+
+- **Mouse users**
+  - uses mouse to navigate page
+- **Touch-screen users**
+  - devices like a phone/tablet.
+  - tappable areas should be large enough (at least 32px x 32px)
+- **Keyboard navigation**
+  - uses keyboard to navigate the page, mostly through the Tab key
+- **Screen reader**
+  - assistive technology that reads the page
+  - offers a "virtual cursor" where it highlights areas on the page with a virtual cursor
+  - navigates page using special keyboard keys
+  
+When building a feature consider how it can be navigated through multiple mediums. 
+
+For example: a common pattern is to use the mouse over state to reveal a menu.
+That sort of functionality works well for mouse users, but it's almost inaccessible by touch/keyboard/screen readers.
 
 
 ## Semantic HTML
@@ -72,36 +93,31 @@ See full [list of available landmarks in HTML5](https://www.w3.org/TR/wai-aria-p
 </nav>
 ```
 
-# The role attribute
+## The `role` attribute
 Most of the semantic HTML elements can be expressed as regular `div` elements with a specific `role` attribute.
-However, more often than not, screen readers don't handle these "faked" elements the same way.
-And you'll need to add additional functionality to get the same behavior like screeb reader announcements and keyboard functionality.
+However, more often than not, screen readers don't handle these "faked" elements the same way. 
+Which leads one to add additional functionality (keyboard shortcuts, announcements) to get the same behavior as a semantic element.
 
 
-# Different Methods of Navigating a Page
 
-- **Mouse users**
-  - uses mouse to navigate page
-- **Touch-screen users**
-  - devices like a phone/tablet.
-  - tappable areas should be large enough (at least 32px x 32px)
-- **Keyboard navigation**
-  - uses keyboard to navigate the site, mostly through the Tab key
-- **Screen reader**
-  - assistive technology that reads the page
-  - offers a "virtual cursor" where it highlights areas on the page with a virtual cursor
-  - navigates page using special keyboard keys
-  
-When building a feature consider how it can be navigated through multiple mediums. For example, a common pattern is to use the mouse over state to reveal a menu.
-That sort of functionality works well for mouse users but it's almost inaccessible by touch/keyboard/screen readers.
+## Providing additional context 
 
-# CSS Utility
-There are many instances where the UI has repetive text that doesn't change, but the visual content/styling around it gives it context.
+There are many instances in modern user interface design where the content and styling around the call to action provides the context for the label in the call to action.
 
-Blind users will not see the styling around it and navigate the site by having the screen reader recite all links on the page.
-If there are buttons that say "View more" and nothing else, then they don't fully understand the context for view more.
+Some ways assistive technologies navigate a page is by reciting content on the page, like all links in a page. 
+Screen readers will not describe the styling surrounding the entity they are reading.
+This poses a problem when there are many links that say "View more".
 
-We can provide additonal context to a label without making it visible. It keeps the design tidy and makes it more accessible.
+For example: If there are links that say "View more" and nothing else, then screen reader users don't fully understand the context for the view more link.
+
+### CSS hidden text
+
+We can provide additonal context to a label without making it visible. It keeps the design tidy as designers intended and makes it more accessible to assistive technologies.
+```html
+<a href='#'>View more <span class='visually-hidden'>products in Healthy Snacks</span></a>
+```
+
+The `visually-hidden` css class moves the content out of the view so visual users will not see it but screen readers will.
 
 ```css
 .visually-hidden {
@@ -116,14 +132,47 @@ We can provide additonal context to a label without making it visible. It keeps 
 }
 ```
 
+### aria-label
+
+The [aria-label](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques/Using_the_aria-label_attribute) property allows us to override what the screen reader would normally announce.
+
 ```html
-<a href='#'>View more <span class='visually-hidden'>products in Healthy Snacks</span></a>
+<a href='/product/chocolate' aria-label="Add chocolate to cart">Add to Cart</a>
 ```
 
-# Hiding Elements
+While the label "Add chocolate to cart" is more user-friendly, the HTML payload can larger since duplicated content is sent.
+
+### aria-describedby and aria-labelledby
+
+The following two methods don't work with all assistive technologies. Consider using `aria-label` or the hidden text approach.
+
+The [aria-describedby](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques/Using_the_aria-describedby_attribute) property allows us to declare multiple element ids that provide additional details to the element's label.
+
+```html
+<div id='product-title'>Chocolate</div>
+<a href='/product/chocolate' aria-describedby="product-title">Add to Cart</a>
+```
+
+The [aria-labelledby](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques/Using_the_aria-labelledby_attribute) attribute allows us to declare multiple element ids that compose the label.
+```html
+<div id="myBillingId">Billing</div>
+
+<div>
+    <div id="myNameId">Name</div>
+    <input type="text" aria-labelledby="myBillingId myNameId"/>
+</div>
+<div>
+    <div id="myAddressId">Address</div>
+    <input type="text" aria-labelledby="myBillingId myAddressId"/>
+</div>
+```
+
+
+
+## Hiding Elements
 
 Sometimes we have certain things that we do not want to make available to screen reders because that same information is accessible elsewhere.
-To hide blocks from screen reader, use the [aria-hidden](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques/Using_the_aria-hidden_attribute) attribute.
+To hide elements from screen reader use the [aria-hidden](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques/Using_the_aria-hidden_attribute) attribute, but it __will still be visually rendered__.
 
 ```html
 <div aria-hidden='true'>
@@ -131,27 +180,25 @@ The information in here will be visible but not accessible via screen readers
 </div>
 ```
 
-# Images
+## Images
 
-### Overview
 All images that provide context to the page should have thoughtful descriptions.
 
-Imagine you have closed your eyes and have never seen the page before:
+Imagine you have closed your eyes and have never seen the image before:
 - How would someone describe the image to you?
 - What are the important bits to help with the context of the page?
 - Avoid using words like: "image", "illustration", "picture", etc..
   
 ### Inline Images
 Any image that uses the `<img>` should have an `alt` property.
-If the image is an illustration and doesn't provide context to the page, the `alt` can be an empty string.
+If the image doesn't provide context to the page and is only there to make the page look pretty, the `alt` can be an empty string.
 If the image provides additional context to the page, it needs a thoughful description.
 
 ```html
 <img src='' alt='' />
 ```
 
-
-## Background Images
+### Background Images
 Most background images are used for decoration only and do not need alternate text.
 However, sometimes background image includes important information.
 Consider using a hidden div that contains a description of the image.
@@ -188,38 +235,48 @@ Each input should have a `<label>` associated with it:
 <input type="text" name="firstname" id="firstname">
 ```
 
-Sometimes we don't want to visually display the `<label>` so we can **visually hide** the element:
+Sometimes we don't want to visually display the `<label>` so we can **visually hide** the element using our previously described `visually-hidden` class:
 
 ```html
 <label for="firstname" class="visually-hidden">First name:</label>
 <input type="text" name="firstname" id="firstname">
 ```
 
-> Note: we are using the `visually-hidden` class defined in an earlier section
-
 
 # Input Validation
 
-When invalid input is entered into forms, we often give the input a different styling. This styling may not be accessible.
-Instructing screen readers that a specific input is invalid can be done via the [aria-invalid](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques/Using_the_aria-invalid_attribute) attribute
+Input are often given different styling to denote invalid input. This styling may not be obvious to assistive technologies.
+Instructing screen readers that a specific input is invalid can be done via the [aria-invalid](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques/Using_the_aria-invalid_attribute) attribute.
 
-`<input aria-invalid='true' />`
+```html
+<input aria-invalid='true' />
+```
+
+There are other times where the inputs are visually disabled, but they don't have the `disabled` attribute declared. To declare an input as disabled without the disabled attribute attached, use the [aria-disabled](https://www.digitala11y.com/aria-disabled-state/) attribute. 
+
+For example: a button needs to be shown as disabled, but it should still be clickable. Maybe clicking on the disabled button triggers a validation announcement.
+
+```html
+<button aria-disabled='true' class='style-disabled'>Save</button>
+```
 
 # Alerts 
 
-The web application might want to alert the user that something changed on the page, that can be done with the [role=alert](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques/Using_the_alert_role) attributes.
+The web application might want to alert the user that something changed on the page, that can be done with the [role](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques/Using_the_alert_role) attributes.
 
 **Beware** that if you trigger multiple alerts that contain the same message, only the first one will be announced by the screen reader.
 To avoid this announced-once issue, please ensure that each alert message is different.
 
 ```html
-<p id="expirationWarning" role="alert">Your log in session will expire in 2 minutes</p>
+<p role="alert">Your session will expire in 2 minutes</p>
 ```
+
+There are many [types of alerts and live regions](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques/Using_the_alert_role)
 
 # Live Regions
 
-With javascript, we are often dynamically changing parts of the site without reloading the page.
-Screen readers will not pick up those changes unless you specifically state that a certain region will change.
+Javascript offers the ability to dynamically change parts of the page without reloading the page.
+Screen readers will not pick up those changes to the page unless that area is marked as a live region.
 Instructing screen readers to watch these regions can be done with the [aria-live](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Live_Regions) attribute.
 
 ```html
@@ -234,21 +291,23 @@ function updateResultsCount(count, searchTerm) {
 updateResultsCount(10, "apple")
 ```
 
-**Beware** that the container that has `aria-live` must exist on page load. If it gets added dynamically after page load, it will not be picked up by some screen readers.
+**Beware** that the container that has `aria-live` must exist on page load or at least must exist before content is modified. If aria-live container is added with new content at the same time it will not be picked up by some screen readers.
 
+A related attribute is [aria-atomic](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Live_Regions#additional_live_region_attributes) which indicates to the screen reader whether it should announce the entire block when anything changes or just the individual change by itself.
 
 # Collapsible/Expandable Content
 
 A common design pattern is to have a button that reveals some section, like an accordion.
-The button that performs the action of revealing a section should be annotated with the [aria-expanded](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/button_role#associated_aria_roles_states_and_properties)
+The button that performs the action of revealing a section should be annotated with the [aria-expanded](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/button_role#associated_aria_roles_states_and_properties) to indicate the status of the content and [aria-haspopup](https://www.digitala11y.com/aria-haspopup-properties/) to annotate that the button reveals additional content when interacted.
+
 
 ```html
 <!-- collapsed state -->
-<button aria-expanded="false">Learn more about foobar</button>
+<button aria-haspopup="true" aria-expanded="false">Learn more about foobar</button>
 <div class="collapsed"></div>
 
 <!-- expanded state -->
-<button aria-expanded="true">Learn more about foobar</button>
+<button aria-haspopup="true" aria-expanded="true">Learn more about foobar</button>
 <div class="expanded">Lorem ipsum...</div>
 ```
 
@@ -295,7 +354,7 @@ A more forgiving way is to let the browser dictate the tab order. The tab order 
 <a href=''>third selected</a>
 ```
 
-Designs are sometimes complex and there are elements on the page that are far apart from each other but appear visually together (usually via css absolute positioning).
+Designs are sometimes complex and there are elements on the page that are declared far apart from each other but appear visually together (usually via css absolute positioning).
 This causes the tab order to feel unnatural. Consider grouping related elements together. 
 
 
