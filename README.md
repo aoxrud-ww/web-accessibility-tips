@@ -53,11 +53,11 @@ Non-interactive elements like `div` with click listeners are not recognized by s
 
 ```html
 <!-- bad -->
-<div onclick="handleClick()">read more</div>
+<div onclick="handleClick()">element will not be detected up as a link</div>
 
 <!-- good -->
 <a href=''>read more</a>
-<button onclick="handleClick()">open description</a>
+<button onclick="handleClick()">element will be detected as link</a>
 ```
 
 ### Landmarks
@@ -94,9 +94,11 @@ See full [list of available landmarks in HTML5](https://www.w3.org/TR/wai-aria-p
 ```
 
 ## The `role` attribute
-Most of the semantic HTML elements can be expressed as regular `div` elements with a specific `role` attribute.
+Most of the semantic HTML elements can be expressed as non-standard elements (ie. `<div>`, `<span>`, etc...) elements with a specific `role` attribute.
 However, more often than not, screen readers don't handle these "faked" elements the same way. 
 Which leads one to add additional functionality (keyboard shortcuts, announcements) to get the same behavior as a semantic element.
+
+Rule of thumb: if there is a semantic element for the purpose, use semantic element.
 
 
 
@@ -106,9 +108,9 @@ There are many instances in modern user interface design where the content and s
 
 Some ways assistive technologies navigate a page is by reciting content on the page, like all links in a page. 
 Screen readers will not describe the styling surrounding the entity they are reading.
-This poses a problem when there are many links that say "View more".
+This poses a problem when there are many links that don't have unique labels.
 
-For example: If there are links that say "View more" and nothing else, then screen reader users don't fully understand the context for the view more link.
+For example: Consider a page where there are many links that say "View more" and nothing else. When screen reader users recite all links on the page, they won't fully understand the context for the view more link. Providing additional context via one of the methods below can help.
 
 ### CSS hidden text
 
@@ -117,7 +119,9 @@ We can provide additonal context to a label without making it visible. It keeps 
 <a href='#'>View more <span class='visually-hidden'>products in Healthy Snacks</span></a>
 ```
 
-The `visually-hidden` css class moves the content out of the view so visual users will not see it but screen readers will.
+The `visually-hidden` css class moves the content out of the view so visual users will not see it, but screen readers will.
+
+The `visually-hidden` css declaration can be seen below:
 
 ```css
 .visually-hidden {
@@ -140,11 +144,10 @@ The [aria-label](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA
 <a href='/product/chocolate' aria-label="Add chocolate to cart">Add to Cart</a>
 ```
 
-While the label "Add chocolate to cart" is more user-friendly, the HTML payload can larger since duplicated content is sent.
 
 ### aria-describedby and aria-labelledby
 
-The following two methods don't work with all assistive technologies. Consider using `aria-label` or the hidden text approach.
+The following two attributes of providing additional context have inconsistent behavior among assistive technologies. Consider using `aria-label` or the hidden text approach demonstrated in the section above.
 
 The [aria-describedby](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques/Using_the_aria-describedby_attribute) property allows us to declare multiple element ids that provide additional details to the element's label.
 
@@ -152,6 +155,9 @@ The [aria-describedby](https://developer.mozilla.org/en-US/docs/Web/Accessibilit
 <div id='product-title'>Chocolate</div>
 <a href='/product/chocolate' aria-describedby="product-title">Add to Cart</a>
 ```
+
+> aria-describedby will announce something like: "Add to cart, Chocolate"
+
 
 The [aria-labelledby](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques/Using_the_aria-labelledby_attribute) attribute allows us to declare multiple element ids that compose the label.
 ```html
@@ -161,12 +167,9 @@ The [aria-labelledby](https://developer.mozilla.org/en-US/docs/Web/Accessibility
     <div id="myNameId">Name</div>
     <input type="text" aria-labelledby="myBillingId myNameId"/>
 </div>
-<div>
-    <div id="myAddressId">Address</div>
-    <input type="text" aria-labelledby="myBillingId myAddressId"/>
-</div>
 ```
 
+> When moving the focus to the Name input, the aria-labelledby will announce: "input, text, Billing Name"
 
 
 ## Hiding Elements
@@ -176,7 +179,8 @@ To hide elements from screen reader use the [aria-hidden](https://developer.mozi
 
 ```html
 <div aria-hidden='true'>
-The information in here will be visible but not accessible via screen readers
+  The information in here will be visible, but not accessible via screen readers.
+  <p>Children will also be hidden</p>
 </div>
 ```
 
@@ -186,8 +190,8 @@ All images that provide context to the page should have thoughtful descriptions.
 
 Imagine you have closed your eyes and have never seen the image before:
 - How would someone describe the image to you?
-- What are the important bits to help with the context of the page?
-- Avoid using words like: "image", "illustration", "picture", etc..
+- What are the important bits to help provide context to the page?
+- Avoid using words like: "image", "illustration", "picture", etc... since the user will know they are looking at a picture.
   
 ### Inline Images
 Any image that uses the `<img>` should have an `alt` property.
@@ -200,20 +204,22 @@ If the image provides additional context to the page, it needs a thoughful descr
 
 ### Background Images
 Most background images are used for decoration only and do not need alternate text.
-However, sometimes background image includes important information.
+However, sometimes background image includes important information and/or provide context.
 Consider using a hidden div that contains a description of the image.
 
 Alternatively, refactor the code to use `<img>` tags.
 
 ```html
 <div style="background-image: url(...)">
-  <span class='visually-hidden'>description of svg</span>
+  <span class='visually-hidden'>description of background image</span>
 </div>
 ```
 
 ### SVG
-Add a `<title>` node inside of the svg that describes the image.
-Hide the svg via `aria-hidden="true"` and add a visually hidden div that describes it.
+
+
+1. Add a `<title>` node inside of the svg that describes the image.
+  
 
 ```html
 <svg>
@@ -221,7 +227,7 @@ Hide the svg via `aria-hidden="true"` and add a visually hidden div that describ
 </svg>
 ```
 
-or
+1. Hide the svg via `aria-hidden="true"` and add a visually hidden element that describes it.
 ```html
 <span class='visually-hidden'>description of svg</span>
 <svg aria-hidden='true'></svg>
@@ -252,26 +258,31 @@ Instructing screen readers that a specific input is invalid can be done via the 
 <input aria-invalid='true' />
 ```
 
-There are other times where the inputs are visually disabled, but they don't have the `disabled` attribute declared. To declare an input as disabled without the disabled attribute attached, use the [aria-disabled](https://www.digitala11y.com/aria-disabled-state/) attribute. 
+There are exceptions where the inputs are styled as visually disabled and they don't have the `disabled` attribute declared.
+Assistive technologies wouldn't announce the disabled styling so the disabled state should be indicated using the [aria-disabled](https://www.digitala11y.com/aria-disabled-state/) attribute. 
 
-For example: a button needs to be shown as disabled, but it should still be clickable. Maybe clicking on the disabled button triggers a validation announcement.
+For example: a button needs to be shown as disabled and it should still be clickable.
+Maybe clicking on the disabled button triggers a validation announcement.
 
 ```html
-<button aria-disabled='true' class='style-disabled'>Save</button>
+<button aria-disabled='true' class='button--disabled'>Save</button>
 ```
 
 # Alerts 
 
-The web application might want to alert the user that something changed on the page, that can be done with the [role](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques/Using_the_alert_role) attributes.
+The web pages might want to inform the user that something changed on the page, that can be done with specific [role](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques/Using_the_alert_role) values.
+
+There are many [types of alerts and live regions](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques/Using_the_alert_role)
+
+
+```html
+<p role="alert">There was an error saving your changes</p>
+<p role="status">Product XYZ has been added to cart</p>
+```
+
 
 **Beware** that if you trigger multiple alerts that contain the same message, only the first one will be announced by the screen reader.
 To avoid this announced-once issue, please ensure that each alert message is different.
-
-```html
-<p role="alert">Your session will expire in 2 minutes</p>
-```
-
-There are many [types of alerts and live regions](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques/Using_the_alert_role)
 
 # Live Regions
 
@@ -291,14 +302,19 @@ function updateResultsCount(count, searchTerm) {
 updateResultsCount(10, "apple")
 ```
 
-**Beware** that the container that has `aria-live` must exist on page load or at least must exist before content is modified. If aria-live container is added with new content at the same time it will not be picked up by some screen readers.
+**Beware** that the container that has `aria-live` must exist on the DOM before the content within is modified.
+If `aria-live` container is added along with new content it will not be picked up by some screen readers.
 
-A related attribute is [aria-atomic](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Live_Regions#additional_live_region_attributes) which indicates to the screen reader whether it should announce the entire block when anything changes or just the individual change by itself.
+A related attribute is [aria-atomic](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Live_Regions#additional_live_region_attributes) which indicates to the screen reader whether it should announce:
+- the entire block when anything changes, or
+- the individual change by itself
 
 # Collapsible/Expandable Content
 
 A common design pattern is to have a button that reveals some section, like an accordion.
-The button that performs the action of revealing a section should be annotated with the [aria-expanded](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/button_role#associated_aria_roles_states_and_properties) to indicate the status of the content and [aria-haspopup](https://www.digitala11y.com/aria-haspopup-properties/) to annotate that the button reveals additional content when interacted.
+The button that performs the action of revealing a section should be annotated with:
+- [aria-haspopup](https://www.digitala11y.com/aria-haspopup-properties/) to indicate that the button reveals additional content when interacted.
+- [aria-expanded](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/button_role#associated_aria_roles_states_and_properties) to indicate the expanded status of the content 
 
 
 ```html
@@ -313,12 +329,14 @@ The button that performs the action of revealing a section should be annotated w
 
 # Focus
 
-There may be a scenario where the focus need to be moved to a specific component on the page.
-Maybe new results were loaded in an infinite scroll list or moving the focus to the invalid input.
+There will be scenario where the focus need to be moved to a specific areao on the page, some of those reasons may be:
+- Moving the focus to the invalid input
+- Moving the focus to a newly added element
+- New search results were loaded in an infinite scroll list 
 
 Moving the focus to an input is easy with javascript via `$input.focus()` where `$input` represents the `DOMElement` (input, button, textarea, etc...).
 
-It gets a bit more challenging when the focus needs to be moved to a non-interactive component.
+It gets a bit more challenging when the focus needs to be moved to a non-interactive component like a `<div>`.
 
 The simplest way is to add [tabindex](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/tabindex) attribute to that destination element.
 ```html
@@ -327,8 +345,9 @@ The simplest way is to add [tabindex](https://developer.mozilla.org/en-US/docs/W
 This approach presents a few problems:
 - A non-interactive element gets the focused outline (which can be disabled via css `outline: 0`)
 - It may be read out loud which may not be a desired behavior 
+
   
-A way to move the focus but not force the screen reader to read it outloud is to create a empty component that can receive focus.
+A way to move the focus, but not force the screen reader to read it outloud is to create a empty component that can receive focus.
 Then we can focus to that element and the blur out of it. That will effectively reset the focus to below the empty component.
 ```html
 <a class='visually-hidden' tabindex="-1" id='resetFocus'></a>
@@ -354,8 +373,52 @@ A more forgiving way is to let the browser dictate the tab order. The tab order 
 <a href=''>third selected</a>
 ```
 
-Designs are sometimes complex and there are elements on the page that are declared far apart from each other but appear visually together (usually via css absolute positioning).
-This causes the tab order to feel unnatural. Consider grouping related elements together. 
+Designs are sometimes complex and there are elements on the page that are declared far apart from each other, but appear visually together (usually via css absolute positioning).
+Consider the following example: this is a product listing that uses css to move the "see reviews" right below the title.
+
+
+```html
+<div class='product'>
+  <a href='#'>Chocolate Pretzel</a>
+  <div class='description'>
+    Enjoy the combination of salty, 
+    crunchy pretzels and peanuts with sweet, 
+    rich, chocolaty flavor in these snack bars.
+    <a href='#'>Read more</a>
+  </div>
+  <a href='#' class='reviews'>See reviews</a>
+</div>
+```
+
+```css
+.product {
+  position: relative;
+}
+.reviews {
+  position: absolute;
+  top: 15px;
+}
+.description {
+  margin-top: 20px;
+}
+```
+
+This causes the tab order to feel unnatural because the tab order will go from the product title to "read more" in the description and finally land on "see reviews".
+Visually the expectation would be to go from product title, see reviews, and finally read more.
+
+Consider grouping related elements together to maintain a sensible tab order:
+ ```html
+<div class='product'>
+  <a href='#'>Chocolate Pretzel</a>
+  <a href='#'>See reviews</a>
+  <div>
+    Enjoy the combination of salty, 
+    crunchy pretzels and peanuts with sweet, 
+    rich, chocolaty flavor in these snack bars.
+    <a href='#'>Read more</a>
+  </div>
+</div>
+```
 
 
 ## Tooling
