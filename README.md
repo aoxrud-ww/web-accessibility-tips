@@ -8,12 +8,12 @@ The following tips and tricks are how I managed to create accessible web pages t
 ## Different Methods of Navigating a Page
 
 - **Mouse users**
-  - uses mouse to navigate page
 - **Touch-screen users**
-  - devices like a phone/tablet.
+  - devices like a phone/tablet, interacts with the screen directly
   - tappable areas should be large enough (at least 32px x 32px)
 - **Keyboard navigation**
   - uses keyboard to navigate the page, mostly through the Tab key
+  - usually navigating between interactive elements like text inputs, buttons, etc...
 - **Screen reader**
   - assistive technology that reads the page
   - offers a "virtual cursor" where it highlights areas on the page with a virtual cursor
@@ -49,15 +49,15 @@ Any time there is content that would benefit from announcing how many items are 
 ### Links and Buttons
 Non-interactive elements like `div` with click listeners are not recognized by screen readers and will be skipped.
 - If there is a url, use `<a href='url'>` 
-- If there is no url, use a `<button>`
+- If there is no url and clicking on it triggers some action on a page, use a `<button>`
 
 ```html
 <!-- bad -->
-<div onclick="handleClick()">element will not be detected up as a link</div>
+<div onclick="handleClick()">not be detected by screen reader/keyboard</div>
 
 <!-- good -->
 <a href=''>read more</a>
-<button onclick="handleClick()">element will be detected as link</a>
+<button onclick="handleClick()">detected as interactive element</button>
 ```
 
 ### Landmarks
@@ -281,8 +281,6 @@ There are many [types of alerts and live regions](https://developer.mozilla.org/
 ```
 
 
-**Beware** that if you trigger multiple alerts that contain the same message, only the first one will be announced by the screen reader.
-To avoid this announced-once issue, please ensure that each alert message is different.
 
 # Live Regions
 
@@ -301,6 +299,10 @@ function updateResultsCount(count, searchTerm) {
 
 updateResultsCount(10, "apple")
 ```
+
+**Beware** that if you trigger multiple announcements that contain the same message, some screen readers only announce the first one and ignore subsequent ones.
+To avoid this announced-once issue, please ensure that each alert message is different.
+
 
 **Beware** that the container that has `aria-live` must exist on the DOM before the content within is modified.
 If `aria-live` container is added along with new content it will not be picked up by some screen readers.
