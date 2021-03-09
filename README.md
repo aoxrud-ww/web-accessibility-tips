@@ -1,11 +1,37 @@
 # Web Accessibility Tips
 
-The following accessibility tips and tricks address some technical ways to building accessible web pages. 
-There are disagreements within assistive technologies on how to handle the [WAI-ARIA](https://www.w3.org/TR/wai-aria) specificiations.
+The following accessibility tips and tricks address some technical ways of building accessible web pages. 
+There are disagreements within assistive technology circles on how to handle the [WAI-ARIA](https://www.w3.org/TR/wai-aria) specificiations.
 There are many opinons on how to build accessible web pages and the best method to use.
-The following tips and tricks are how I managed to create accessible web pages that work on most modern assistive technologies.
+The following tips and tricks are how I managed to create accessible web pages that work with most modern assistive technologies.
 
-## Different Methods of Navigating a Page
+## Overview
+ - [Different Methods of Navigating a Page](#navigating)
+ - [Semantic HTML](#semanticHTML)
+    - [Lists](#lists)
+    - [Links and Buttons](#links)
+    - [Landmarks](#landmarks)
+    - [Navigation](#navigation)
+ - [The `role` attribute](#role)
+ - [Providing additional context](#additionalContext)
+ - [CSS hidden text](#hiddenText)
+ - [`aria-describedby` and `aria-labelledby`](#describedByLabelledBy)
+ - [Hiding Elements](#hiding)
+ - [Images](#images)
+    - [The `alt` attribute](#alt)
+    - [Background Images](#backgroundImages)
+    - [SVG](#svg)
+ - [Input Labels](#inputLabels)
+ - [Input Validation](#inputValidation)
+ - [Contrast](#contrast)
+ - [Alerts](#alerts)
+ - [Live Regions](#liveRegions)
+ - [Collapsible/Expandable Content](#expandableContent)
+ - [Focus](#focus)
+ - [Layout and the Tab Order](#tabOrder)
+ - [Resources](#resources)
+
+## <a name="navigating"></a>Different Methods of Navigating a Page
 
 - **Mouse users**
 - **Touch-screen users**
@@ -13,23 +39,23 @@ The following tips and tricks are how I managed to create accessible web pages t
   - tappable areas should be large enough (at least 32px x 32px)
 - **Keyboard navigation**
   - uses keyboard to navigate the page, mostly through the Tab key
-  - usually navigating between interactive elements like text inputs, buttons, etc...
+  - usually navigating between [interactive elements](https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Content_categories#interactive_content) like text inputs, buttons, etc...
 - **Screen reader**
   - assistive technology that reads the page
   - offers a "virtual cursor" where it highlights areas on the page with a virtual cursor
   - navigates page using special keyboard keys
   
-When building a feature consider how it can be navigated through multiple mediums. 
+When building a feature consider how it can be navigated through multiple navigation methods. 
 
 For example: a common pattern is to use the mouse over state to reveal a menu.
 That sort of functionality works well for mouse users, but it's almost inaccessible by touch/keyboard/screen readers.
 
 
-## Semantic HTML
-Semantic HTML is the foundation of accessibility in a web application. Using the various [HTML elements](https://developer.mozilla.org/en-US/docs/Web/HTML/Element) to reinforce the meaning of information in our websites will often give us accessibility for free.
+## <a name="semanticHTML"></a>Semantic HTML
+[Semantic HTML](https://developer.mozilla.org/en-US/docs/Glossary/Semantics#semantics_in_html) is the foundation of accessibility in a web application. Using the various [HTML elements](https://developer.mozilla.org/en-US/docs/Web/HTML/Element) to reinforce the meaning of information in our websites will often give us accessibility for free.
 
 
-### Lists
+### <a name="lists"></a>Lists
 
 Any time there is content that would benefit from announcing how many items are there, use a list.
 ```html
@@ -46,7 +72,7 @@ Any time there is content that would benefit from announcing how many items are 
 </ul>
 ```
 
-### Links and Buttons
+### <a name="links"></a>Links and Buttons
 Non-interactive elements like `div` with click listeners are not recognized by screen readers and will be skipped.
 - If there is a url, use `<a href='url'>` 
 - If there is no url and clicking on it triggers some action on a page, use a `<button>`
@@ -60,7 +86,7 @@ Non-interactive elements like `div` with click listeners are not recognized by s
 <button onclick="handleClick()">detected as interactive element</button>
 ```
 
-### Landmarks
+### <a name="landmarks"></a>Landmarks
 Using the correct landmark elements helps assistive technologies navigate the page more efficiently.
 See full [list of available landmarks in HTML5](https://www.w3.org/TR/wai-aria-practices/examples/landmarks/HTML5.html)
 ```html
@@ -73,7 +99,7 @@ See full [list of available landmarks in HTML5](https://www.w3.org/TR/wai-aria-p
 <main class="main-content"></main>
 ```
 
-### Navigation
+### <a name="navigation"></a>Navigation
 ```html
 <!-- bad -->
 <div class="navigation">
@@ -93,26 +119,25 @@ See full [list of available landmarks in HTML5](https://www.w3.org/TR/wai-aria-p
 </nav>
 ```
 
-## The `role` attribute
-Most of the semantic HTML elements can be expressed as non-standard elements (ie. `<div>`, `<span>`, etc...) elements with a specific `role` attribute.
+## <a name="role"></a>The `role` attribute
+Most of the semantic HTML elements can be expressed as non-standard elements (ie. `<div>`, `<span>`, etc...) elements with a specific [`role` attribute](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques#roles).
 However, more often than not, screen readers don't handle these "faked" elements the same way. 
-Which leads one to add additional functionality (keyboard shortcuts, announcements) to get the same behavior as a semantic element.
+These inconsistencies might lead one to add additional functionality (keyboard shortcuts, announcements) to get the same behavior as a semantic element.
 
 Rule of thumb: if there is a semantic element for the purpose, use semantic element.
 
 
+## <a name="additionalContext"></a>Providing additional context 
 
-## Providing additional context 
-
-There are many instances in modern user interface design where the content and styling around the call to action provides the context for the label in the call to action.
+There are times where the content and styling around an interactive element provides the context for the label for that element. For example: Consider a page where there are many links that say "View more" and nothing else.
 
 Some ways assistive technologies navigate a page is by reciting content on the page, like all links in a page. 
 Screen readers will not describe the styling surrounding the entity they are reading.
 This poses a problem when there are many links that don't have unique labels.
 
-For example: Consider a page where there are many links that say "View more" and nothing else. When screen reader users recite all links on the page, they won't fully understand the context for the view more link. Providing additional context via one of the methods below can help.
+When screen reader users recite all links on the page, they won't fully understand the context for the view more link. Providing additional context via one of the methods below can help.
 
-### CSS hidden text
+## <a name="hiddenText"></a>CSS hidden text
 
 We can provide additonal context to a label without making it visible. It keeps the design tidy as designers intended and makes it more accessible to assistive technologies.
 ```html
@@ -136,7 +161,9 @@ The `visually-hidden` css declaration can be seen below:
 }
 ```
 
-### aria-label
+Why not just use `display: none;`? If you were to do so the element would have it's display turned off. This will make the element and all it's descendants inaccessible to screen readers.
+
+## <a name="hiddenText"></a>aria-label
 
 The [aria-label](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques/Using_the_aria-label_attribute) property allows us to override what the screen reader would normally announce.
 
@@ -145,7 +172,7 @@ The [aria-label](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA
 ```
 
 
-### aria-describedby and aria-labelledby
+## <a name="describedByLabelledBy"></a>`aria-describedby` and `aria-labelledby`
 
 The following two attributes of providing additional context have inconsistent behavior among assistive technologies. Consider using `aria-label` or the hidden text approach demonstrated in the section above.
 
@@ -172,9 +199,9 @@ The [aria-labelledby](https://developer.mozilla.org/en-US/docs/Web/Accessibility
 > When moving the focus to the Name input, the aria-labelledby will announce: "input, text, Billing Name"
 
 
-## Hiding Elements
+## <a name="hiding"></a>Hiding Elements
 
-Sometimes we have certain things that we do not want to make available to screen reders because that same information is accessible elsewhere.
+Sometimes we have certain things that we do not want to make available to screen readers because that same information is accessible elsewhere.
 To hide elements from screen reader use the [aria-hidden](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques/Using_the_aria-hidden_attribute) attribute, but it __will still be visually rendered__.
 
 ```html
@@ -184,25 +211,40 @@ To hide elements from screen reader use the [aria-hidden](https://developer.mozi
 </div>
 ```
 
-## Images
+## <a name="images"></a>Images
 
-All images that provide context to the page should have thoughtful descriptions.
+Any image that provides additional information to the page that is not provided in the text surrounding it should have thoughtful descriptions.
+
+### <a name="alt"></a>The `alt` attribute
+Any image that uses the `<img>` must have an `alt` attribute -- even if it's empty. Determining whether the `alt` is empty or not can be difficult. When In doubt consult the [WC3 alt decision tree](https://www.w3.org/WAI/tutorials/images/decision-tree/).
+
+#### First determine if the `alt` attribute should be empty
+
+In some cases the `alt` attribute should be an empty string when the image:
+
+- Is purely decorative. Ex: a button says "settings" and has an image of a gear. The gear is decorative, it provides no additional information.
+- Provides no additional information, but is there to convey a mood. Ex: a lifestyle image followed by a form. The lifestyle image, though full of content, provides no meaningful relation or additional context to the main content (ie the form).
+- The content of the image is conveyed in the surrounding text. Ex: an image of a cat with a caption underneath that says "cat". Adding alt text stating "cat" would be redundent
+
+```html
+<img src='./someDecorativeImg.svg' alt='' />
+```
+
+#### Determining the non-empty `alt` attribute value
+
+If the image provides additional context to the page, it needs a thoughful description.
 
 Imagine you have closed your eyes and have never seen the image before:
 - How would someone describe the image to you?
-- What are the important bits to help provide context to the page?
+- What the image provides additional context to the page?
 - Avoid using words like: "image", "illustration", "picture", etc... since the user will know they are looking at a picture.
-  
-### Inline Images
-Any image that uses the `<img>` should have an `alt` property.
-If the image doesn't provide context to the page and is only there to make the page look pretty, the `alt` can be an empty string.
-If the image provides additional context to the page, it needs a thoughful description.
+- Be as succient as possible.
 
 ```html
-<img src='' alt='' />
+<img src='./dog.svg' alt='bull dog' />
 ```
 
-### Background Images
+### <a name="backgroundImages"></a>Background Images
 Most background images are used for decoration only and do not need alternate text.
 However, sometimes background image includes important information and/or provide context.
 Consider using a hidden div that contains a description of the image.
@@ -215,11 +257,11 @@ Alternatively, refactor the code to use `<img>` tags.
 </div>
 ```
 
-### SVG
+### <a name="svg"></a>SVG
 
+When possible SVG images are prefered over bitmap. Some uses use screen enlargers to better view the content; SVG images scale losslessly while bitmap images become pixelated.
 
 1. Add a `<title>` node inside of the svg that describes the image.
-  
 
 ```html
 <svg>
@@ -227,21 +269,22 @@ Alternatively, refactor the code to use `<img>` tags.
 </svg>
 ```
 
-1. Hide the svg via `aria-hidden="true"` and add a visually hidden element that describes it.
+2. Hide the svg via `aria-hidden="true"` and add a visually hidden element that describes it.
 ```html
 <span class='visually-hidden'>description of svg</span>
 <svg aria-hidden='true'></svg>
 ```
 
 
-# Input Labels
+## <a name="inputLabels"></a>Input Labels
+
 Each input should have a `<label>` associated with it:
 ```html
 <label for="firstname">First name:</label>
 <input type="text" name="firstname" id="firstname">
 ```
 
-Sometimes we don't want to visually display the `<label>` so we can **visually hide** the element using our previously described `visually-hidden` class:
+Sometimes we don't want to visually display the `<label>` so we can [**visually hide**](#hiding) the element using our previously described `visually-hidden` class:
 
 ```html
 <label for="firstname" class="visually-hidden">First name:</label>
@@ -249,26 +292,29 @@ Sometimes we don't want to visually display the `<label>` so we can **visually h
 ```
 
 
-# Input Validation
+## <a name="inputValidation"></a>Input Validation
 
-Input are often given different styling to denote invalid input. This styling may not be obvious to assistive technologies.
-Instructing screen readers that a specific input is invalid can be done via the [aria-invalid](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques/Using_the_aria-invalid_attribute) attribute.
+Inputs are often given different styling to denote an invalid input. This styling may not be obvious to assistive technologies. Styling should never be the sole way of denoting an invalid input. Instead styling should be used in conjunction with a text message and the [aria-invalid](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques/Using_the_aria-invalid_attribute) attribute.
 
 ```html
 <input aria-invalid='true' />
 ```
 
-There are exceptions where the inputs are styled as visually disabled and they don't have the `disabled` attribute declared.
+## <a name="disablingInputs"></a>Disabling Inputs
+
 Assistive technologies wouldn't announce the disabled styling so the disabled state should be indicated using the [aria-disabled](https://www.digitala11y.com/aria-disabled-state/) attribute. 
 
-For example: a button needs to be shown as disabled and it should still be clickable.
-Maybe clicking on the disabled button triggers a validation announcement.
+There are exceptions where the inputs are styled as visually disabled and they don't have the `disabled` attribute declared. For example: a checkbox needs to be visually disabled but it should still be focusable. We'd want this so its content is still accessible to the screen reader.
 
 ```html
 <button aria-disabled='true' class='button--disabled'>Save</button>
 ```
 
-# Alerts 
+## <a name="contrast"></a>Contrast
+
+Contrast is an important consideration when styling text and its background. If contrast is too low the text can become illegible. "Contrast" is defined as a measure of the difference in perceived brightness between two colors (text color and background color). Contrast is expressed as a ratio ranging from 1:1 (white on white) to 21:1 (black on a white). To be legible the contrast must be 1:4.5 at a miniumum. Use WebAIM's [contrast checker](https://webaim.org/resources/contrastchecker/) to test text and background color.
+
+## <a name="alerts"></a>Alerts 
 
 The web pages might want to inform the user that something changed on the page, that can be done with specific [role](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques/Using_the_alert_role) values.
 
@@ -280,9 +326,7 @@ There are many [types of alerts and live regions](https://developer.mozilla.org/
 <p role="status">Product XYZ has been added to cart</p>
 ```
 
-
-
-# Live Regions
+## <a name="liveRegions"></a>Live Regions
 
 Javascript offers the ability to dynamically change parts of the page without reloading the page.
 Screen readers will not pick up those changes to the page unless that area is marked as a live region.
@@ -300,20 +344,20 @@ function updateResultsCount(count, searchTerm) {
 updateResultsCount(10, "apple")
 ```
 
-**Beware** that if you trigger multiple announcements that contain the same message, some screen readers only announce the first one and ignore subsequent ones.
+**Beware:** if you trigger multiple announcements that contain the same message, some screen readers only announce the first one and ignore subsequent ones.
 To avoid this announced-once issue, please ensure that each alert message is different.
 
 
-**Beware** that the container that has `aria-live` must exist on the DOM before the content within is modified.
+**Beware:** the container that has `aria-live` must exist on the DOM before the content within is modified.
 If `aria-live` container is added along with new content it will not be picked up by some screen readers.
 
 A related attribute is [aria-atomic](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Live_Regions#additional_live_region_attributes) which indicates to the screen reader whether it should announce:
 - the entire block when anything changes, or
 - the individual change by itself
 
-# Collapsible/Expandable Content
+## <a name="expandableContent"></a>Collapsible/Expandable Content
 
-A common design pattern is to have a button that reveals some section, like an accordion.
+A common design pattern is to have a button that reveals some section, like an accordion or a modal.
 The button that performs the action of revealing a section should be annotated with:
 - [aria-haspopup](https://www.digitala11y.com/aria-haspopup-properties/) to indicate that the button reveals additional content when interacted.
 - [aria-expanded](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/button_role#associated_aria_roles_states_and_properties) to indicate the expanded status of the content 
@@ -329,9 +373,9 @@ The button that performs the action of revealing a section should be annotated w
 <div class="expanded">Lorem ipsum...</div>
 ```
 
-# Focus
+## <a name="focus"></a>Focus
 
-There will be scenario where the focus need to be moved to a specific areao on the page, some of those reasons may be:
+There will be scenarios where the focus need to be moved to a specific area on the page, some of those reasons may be:
 - Moving the focus to the invalid input
 - Moving the focus to a newly added element
 - New search results were loaded in an infinite scroll list 
@@ -363,7 +407,7 @@ resetFocusAnchor.blur();
 
 By following this approach, the focus will be moved after the `<a>` so be primed for the next `Tab` keypress. 
 
-# Layout and the Tab Order
+## <a name="tabOrder"></a>Layout and the Tab Order
 
 We can specify the `tabindex` of each element in a page by assigning a number that indicates their tab order.
 However, that approach is hard to maintain, specially in a dynamic page.
@@ -423,9 +467,11 @@ Consider grouping related elements together to maintain a sensible tab order:
 ```
 
 
-## Tooling
+## <a name="resources"></a>Resources
 - [eslint-plugin-jsx-a11y](https://github.com/jsx-eslint/eslint-plugin-jsx-a11y) - Static AST checker for accessibility rules on JSX elements.
   - informs about missing properties and/or their values
 - [Chrome Lighthouse](https://developers.google.com/web/tools/lighthouse) - Audits for performance, accessibility, progressive web apps, SEO and more.
-  - helps
-
+- [WebAIM](https://webaim.org/) - Web accessibility in mind, a good resource for info on ARIA, accessibile images, and styling for web accessibility.
+- [WC3 WAI](https://www.w3.org/WAI/) - WC3's web accessibility initiative 
+- [How People with Disabilities Use the Web](https://www.w3.org/WAI/people-use-web/) - From WC3's WAI, introduces how people with disabilities, including people with age-related impairments, use the Web.
+- [Contrast Checker Tool](https://webaim.org/resources/contrastchecker/) - Used to check if text color and background color have an acceptable [contrast ratio](#contrast). 
