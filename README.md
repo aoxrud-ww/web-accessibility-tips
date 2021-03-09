@@ -86,6 +86,15 @@ Non-interactive elements like `div` with click listeners are not recognized by s
 <button onclick="handleClick()">detected as interactive element</button>
 ```
 
+If a link opens a new tab that information should be conveyed to the screen reader somehow.
+
+```html
+<a href='http://google.com' target='_blank'>
+  google
+  <span class='visually-hidden'>opens new tab</span>
+</a>
+```
+
 ### <a name="landmarks"></a>Landmarks
 Using the correct landmark elements helps assistive technologies navigate the page more efficiently.
 See full [list of available landmarks in HTML5](https://www.w3.org/TR/wai-aria-practices/examples/landmarks/HTML5.html)
