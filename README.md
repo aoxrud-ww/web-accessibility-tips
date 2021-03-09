@@ -475,3 +475,4 @@ Consider grouping related elements together to maintain a sensible tab order:
 - [WC3 WAI](https://www.w3.org/WAI/) - WC3's web accessibility initiative 
 - [How People with Disabilities Use the Web](https://www.w3.org/WAI/people-use-web/) - From WC3's WAI, introduces how people with disabilities, including people with age-related impairments, use the Web.
 - [Contrast Checker Tool](https://webaim.org/resources/contrastchecker/) - Used to check if text color and background color have an acceptable [contrast ratio](#contrast). 
+- [WC3 alt decision tree](https://www.w3.org/WAI/tutorials/images/decision-tree/) - Used to determine what the `<img>` alt attribute value should be.
