@@ -144,7 +144,7 @@ Some ways assistive technologies navigate a page is by reciting content on the p
 Screen readers will not describe the styling surrounding the entity they are reading.
 This poses a problem when there are many links that don't have unique labels.
 
-When screen reader users recite all links on the page, they won't fully understand the context for the view more link. Providing additional context via one of the methods below can help.
+When screen readers recite all links on the page, users won't fully understand the context for the view more link. Providing additional context via one of the methods below can help.
 
 ## <a name="hiddenText"></a>CSS hidden text
 
