@@ -247,7 +247,7 @@ Imagine you have closed your eyes and have never seen the image before:
 - How would someone describe the image to you?
 - What context does the image provide to the page?
 - Avoid using words like: "image", "illustration", "picture", etc... since the user will know they are looking at a picture.
-- Be as succient as possible.
+- Be as succinct as possible.
 
 ```html
 <img src="./dog.svg" alt="bull dog" />
