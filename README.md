@@ -321,7 +321,7 @@ There are exceptions where the inputs are styled as visually disabled and they d
 
 ## <a name="contrast"></a>Contrast
 
-Contrast is an important consideration when styling text and its background. If contrast is too low the text can become illegible. "Contrast" is defined as a measure of the difference in perceived brightness between two colors (text color and background color). Contrast is expressed as a ratio ranging from 1:1 (white on white) to 21:1 (black on a white). To be legible the contrast must be 1:4.5 at a miniumum. Use WebAIM's [contrast checker](https://webaim.org/resources/contrastchecker/) to test text and background color.
+Contrast is an important consideration when styling text and its background. If contrast is too low the text can become illegible. "Contrast" is defined as a measure of the difference in perceived brightness between two colors (text color and background color). Contrast is expressed as a ratio ranging from 1:1 (white on white) to 21:1 (black on a white). To be legible the contrast must be 1:4.5 at a minimum. Use WebAIM's [contrast checker](https://webaim.org/resources/contrastchecker/) to test text and background color.
 
 ## <a name="alerts"></a>Alerts 
 
