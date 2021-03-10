@@ -142,7 +142,7 @@ There are times where the content and styling around an interactive element prov
 
 Some ways assistive technologies navigate a page is by reciting content on the page, like all links in a page. 
 Screen readers will not describe the styling surrounding the entity they are reading.
-This poses a problem when there are many links that don't have unique labels.
+This poses a problem when there are many links that are visually different, but don't have unique labels.
 
 When screen readers recite all links on the page, users won't fully understand the context for the view more link. Providing additional context via one of the methods below can help.
 
