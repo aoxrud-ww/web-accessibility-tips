@@ -170,7 +170,7 @@ The `visually-hidden` css declaration can be seen below:
 }
 ```
 
-Why not just use `display: none;`? If you were to do so the element would have it's display turned off. This will make the element and all it's descendants inaccessible to screen readers.
+Why not just use `display: none;`? If you were to do so the element would have it's display turned off. This will make the element and all it's descendants invisible and inaccessible to screen readers.
 
 ## <a name="hiddenText"></a>aria-label
 
