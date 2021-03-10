@@ -366,7 +366,7 @@ A related attribute is [aria-atomic](https://developer.mozilla.org/en-US/docs/We
 
 ## <a name="expandableContent"></a>Collapsible/Expandable Content
 
-A common design pattern is to have a button that reveals some section, like an accordion or a modal.
+A common design pattern is to have a button that reveals some section, like an accordion.
 The button that performs the action of revealing a section should be annotated with:
 - [aria-haspopup](https://www.digitala11y.com/aria-haspopup-properties/) to indicate that the button reveals additional content when interacted.
 - [aria-expanded](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/button_role#associated_aria_roles_states_and_properties) to indicate the expanded status of the content 
