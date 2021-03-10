@@ -245,7 +245,7 @@ If the image provides additional context to the page, it needs a thoughful descr
 
 Imagine you have closed your eyes and have never seen the image before:
 - How would someone describe the image to you?
-- What the image provides additional context to the page?
+- What context does the image provide to the page?
 - Avoid using words like: "image", "illustration", "picture", etc... since the user will know they are looking at a picture.
 - Be as succient as possible.
 
