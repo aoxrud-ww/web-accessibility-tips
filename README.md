@@ -129,7 +129,7 @@ See full [list of available landmarks in HTML5](https://www.w3.org/TR/wai-aria-p
 ```
 
 ## <a name="role"></a>The `role` attribute
-Most of the semantic HTML elements can be expressed as non-standard elements (ie. `<div>`, `<span>`, etc...) elements with a specific [`role` attribute](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques#roles).
+Most of the semantic HTML elements can be expressed as non-standard elements (ie. `<div>`, `<span>`, etc...) with a specific [`role` attribute](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques#roles).
 However, more often than not, screen readers don't handle these "faked" elements the same way. 
 These inconsistencies might lead one to add additional functionality (keyboard shortcuts, announcements) to get the same behavior as a semantic element.
 
