@@ -268,7 +268,7 @@ Alternatively, refactor the code to use `<img>` tags.
 
 ### <a name="svg"></a>SVG
 
-When possible SVG images are prefered over bitmap. Some uses use screen enlargers to better view the content; SVG images scale losslessly while bitmap images become pixelated.
+When possible use SVG images over bitmap images because they can be enlarged via page zoom without losing quality; SVG images scale losslessly while bitmap images become pixelated.
 
 1. Add a `<title>` node inside of the svg that describes the image.
 
