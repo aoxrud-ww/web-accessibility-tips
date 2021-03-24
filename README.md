@@ -1,4 +1,4 @@
-# Web Accessibility Tips
+# Web Accessibility Tips and Tricks
 
 The following accessibility tips and tricks address some technical ways to build accessible web pages. 
 There are disagreements within assistive technologies on how to handle the [WAI-ARIA](https://www.w3.org/TR/wai-aria) specifications.
@@ -16,7 +16,7 @@ The following tips and tricks are how I managed to create accessible web pages t
   - usually navigating between interactive elements like text inputs, buttons, etc...
 - **Screen reader**
   - assistive technology that reads the page
-  - offers a "virtual cursor" where it highlights areas on the page with a virtual cursor
+  - offers a "virtual cursor" where it highlights areas on the page
   - navigates page using special keyboard keys
   
 When building a feature consider how it can be navigated through multiple mediums. 
@@ -53,7 +53,7 @@ Any time there is content that would benefit from announcing how many items are 
 
 ### Links and Buttons
 Non-interactive elements like `div` with click listeners are not recognized by screen readers and will be skipped.
-- If there is a url, use `<a href='url'>` 
+- If there is a url, use `<a href="url">` 
 - If there is no url and clicking on it triggers some action on a page, use a `<button>`
 
 ```html
@@ -64,7 +64,7 @@ Non-interactive elements like `div` with click listeners are not recognized by s
 
 ```html
 <!-- good -->
-<a href='https://example.com'>learn more about drums</a>
+<a href="https://example.com">learn more about drums</a>
 ```
 > Announcement: link, learn more about drums
 
@@ -148,7 +148,7 @@ For example: Consider a page where there are many links that say "View more" and
 
 We can provide additional context to a label without making it visible. It keeps the design tidy as designers intended and makes it more accessible to assistive technologies.
 ```html
-<a href='#'>View more <span class='visually-hidden'>products in Healthy Snacks</span></a>
+<a href="https://example.com">View more <span class="visually-hidden">products in Healthy Snacks</span></a>
 ```
 > Announcement: link, View more products in Healthy Snacks
 
@@ -174,7 +174,7 @@ The `visually-hidden` css declaration can be seen below:
 The [aria-label](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques/Using_the_aria-label_attribute) property allows us to override what the screen reader would normally announce.
 
 ```html
-<a href='/product/chocolate' aria-label="Add chocolate to cart">Add to Cart</a>
+<a href="/product/chocolate" aria-label="Add chocolate to cart">Add to Cart</a>
 ```
 > Announcement: link, Add chocolate to cart
 
@@ -186,8 +186,8 @@ The following two attributes of providing additional context have inconsistent b
 The [aria-describedby](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques/Using_the_aria-describedby_attribute) property allows us to declare multiple element ids that provide additional details to the element's label.
 
 ```html
-<div id='product-title'>Chocolate</div>
-<a href='/product/chocolate' aria-describedby="product-title">Add to Cart</a>
+<div id="product-title">Chocolate</div>
+<a href="/product/chocolate" aria-describedby="product-title">Add to Cart</a>
 ```
 > Announcement: Add to Cart, Chocolate
 
@@ -212,7 +212,7 @@ Sometimes we have certain things that we do not want to make available to screen
 To hide elements from screen readers use the [aria-hidden](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques/Using_the_aria-hidden_attribute) attribute, but it __will still be visually rendered__.
 
 ```html
-<div aria-hidden='true'>
+<div aria-hidden="true">
   The information in here will be visible, but not accessible via screen readers.
   <p>Children will also be hidden</p>
 </div>
@@ -235,7 +235,7 @@ If the image doesn't provide context to the page and is only there to make the p
 If the image provides additional context to the page, it needs a thoughtful description.
 
 ```html
-<img src='' alt='' />
+<img src="" alt="" />
 ```
 
 ### Background Images
@@ -245,7 +245,7 @@ Consider using a hidden div that contains a description of the image.
 
 ```html
 <div style="background-image: url(...)">
-  <span class='visually-hidden'>description of background image</span>
+  <span class="visually-hidden">description of background image</span>
 </div>
 ```
 
@@ -255,8 +255,8 @@ Alternatively, refactor the code to use `<img>` tags.
 
 Hide the svg via `aria-hidden="true"` and add a visually hidden element that describes it.
 ```html
-<span class='visually-hidden'>description of svg</span>
-<svg aria-hidden='true'></svg>
+<span class="visually-hidden">description of svg</span>
+<svg aria-hidden="true"></svg>
 ```
 
 
@@ -267,7 +267,7 @@ There are other approaches to make inline SVGs more accessible but they _aren't 
 
 ```html
 <svg role="img" aria-labelledby="svg-title svg-desc">
-  <desc id='svg-desc'>drumsticks placed on top of a snare drum</desc>
+  <desc id="svg-desc">drumsticks placed on top of a snare drum</desc>
 </svg>
 ```
 > Announcement: drumsticks placed on top of a snare drum, image
@@ -295,7 +295,7 @@ Input are often given different styling to denote invalid input. This styling ma
 Instructing screen readers that a specific input is invalid can be done via the [aria-invalid](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques/Using_the_aria-invalid_attribute) attribute.
 
 ```html
-<input aria-invalid='true' />
+<input aria-invalid="true" />
 ```
 > Announcement: invalid data, edit text
 
@@ -306,7 +306,7 @@ For example: a button needs to be shown as disabled and it should still be click
 Maybe clicking on the disabled button triggers a validation announcement.
 
 ```html
-<button aria-disabled='true' class='button--disabled'>Save</button>
+<button aria-disabled="true" class="button--disabled">Save</button>
 ```
 > Announcement: Save, dimmed, button
 
@@ -399,11 +399,11 @@ This approach presents a few problems:
 A way to move the focus, but not force the screen reader to read it outloud is to create an empty component that can receive focus.
 Then we can focus on that element and the blur out of it. That will effectively reset the focus to below the empty component.
 ```html
-<a class='visually-hidden' tabindex="-1" id='resetFocus'></a>
+<a class="visually-hidden" tabindex="-1" id="resetFocus"></a>
 <div tabindex="-1">my content here</div>
 ```
 ```js
-const resetFocusAnchor = document.getElementById('resetFocus');
+const resetFocusAnchor = document.getElementById("resetFocus");
 resetFocusAnchor.focus();
 resetFocusAnchor.blur();
 ```
@@ -419,9 +419,9 @@ However, that approach is hard to maintain, especially in a dynamic page.
 
 A more forgiving way is to let the browser dictate the tab order. The tab order often follows the html structure:
 ```html
-<a href=''>first selected</a>
-<a href=''>second selected</a>
-<a href=''>third selected</a>
+<a href="https://example.com/1">first selected</a>
+<a href="https://example.com/2">second selected</a>
+<a href="https://example.com/3">third selected</a>
 ```
 
 Designs are sometimes complex and there are elements on the page that are declared far apart from each other, but appear visually together (usually via css absolute positioning).
@@ -429,15 +429,15 @@ Consider the following example: this is a product listing that uses css to move 
 
 
 ```html
-<div class='product'>
-  <a href='#'>Chocolate Pretzel</a>
-  <div class='description'>
+<div class="product">
+  <a href="#">Chocolate Pretzel</a>
+  <div class="description">
     Enjoy the combination of salty, 
     crunchy pretzels and peanuts with sweet, 
     rich, chocolaty flavor in these snack bars.
-    <a href='#'>Read more</a>
+    <a href="#">Read more</a>
   </div>
-  <a href='#' class='reviews'>See reviews</a>
+  <a href="#" class="reviews">See reviews</a>
 </div>
 ```
 
@@ -459,14 +459,14 @@ Visually the expectation would be to go from product title, see reviews, and fin
 
 Consider grouping related elements together to maintain a sensible tab order:
  ```html
-<div class='product'>
-  <a href='#'>Chocolate Pretzel</a>
-  <a href='#'>See reviews</a>
+<div class="product">
+  <a href="#">Chocolate Pretzel</a>
+  <a href="#">See reviews</a>
   <div>
     Enjoy the combination of salty, 
     crunchy pretzels and peanuts with sweet, 
     rich, chocolaty flavor in these snack bars.
-    <a href='#'>Read more</a>
+    <a href="#">Read more</a>
   </div>
 </div>
 ```
