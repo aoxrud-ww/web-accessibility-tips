@@ -1,8 +1,8 @@
 # Web Accessibility Tips
 
-The following accessibility tips and tricks address some technical ways to building accessible web pages. 
-There are disagreements within assistive technologies on how to handle the [WAI-ARIA](https://www.w3.org/TR/wai-aria) specificiations.
-There are many opinons on how to build accessible web pages and the best method to use.
+The following accessibility tips and tricks address some technical ways to build accessible web pages. 
+There are disagreements within assistive technologies on how to handle the [WAI-ARIA](https://www.w3.org/TR/wai-aria) specifications.
+There are many opinions on how to build accessible web pages and the best method to use.
 The following tips and tricks are how I managed to create accessible web pages that work on most modern assistive technologies.
 
 ## Different Methods of Navigating a Page
@@ -130,7 +130,7 @@ Most of the semantic HTML elements can be expressed as non-standard elements (ie
 However, more often than not, screen readers don't handle these "mocked" elements the same way. 
 Which leads one to add additional functionality (keyboard shortcuts, announcements) to get the same behavior as a semantic element.
 
-Rule of thumb: if there is a semantic element for the purpose, use semantic element.
+Rule of thumb: if there is a semantic element for the purpose, use a semantic element.
 
 
 
@@ -142,11 +142,11 @@ Some ways assistive technologies navigate a page is by reciting content on the p
 Screen readers will not describe the styling surrounding the entity they are reading.
 This poses a problem when there are many links that don't have unique labels.
 
-For example: Consider a page where there are many links that say "View more" and nothing else. When screen reader users recite all links on the page, they won't fully understand the context for the view more link. Providing additional context via one of the methods below can help.
+For example: Consider a page where there are many links that say "View more" and nothing else. When screen reader users recite all links on the page, they won't fully understand the context for the "view more" link. Providing additional context via one of the methods below can help.
 
 ### CSS hidden text
 
-We can provide additonal context to a label without making it visible. It keeps the design tidy as designers intended and makes it more accessible to assistive technologies.
+We can provide additional context to a label without making it visible. It keeps the design tidy as designers intended and makes it more accessible to assistive technologies.
 ```html
 <a href='#'>View more <span class='visually-hidden'>products in Healthy Snacks</span></a>
 ```
@@ -208,8 +208,8 @@ The [aria-labelledby](https://developer.mozilla.org/en-US/docs/Web/Accessibility
 
 ## Hiding Elements
 
-Sometimes we have certain things that we do not want to make available to screen reders because that same information is accessible elsewhere.
-To hide elements from screen reader use the [aria-hidden](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques/Using_the_aria-hidden_attribute) attribute, but it __will still be visually rendered__.
+Sometimes we have certain things that we do not want to make available to screen readers because that same information is accessible elsewhere.
+To hide elements from screen readers use the [aria-hidden](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques/Using_the_aria-hidden_attribute) attribute, but it __will still be visually rendered__.
 
 ```html
 <div aria-hidden='true'>
@@ -232,7 +232,7 @@ Imagine you have closed your eyes and have never seen the image before:
 ### Inline Images
 Any image that uses the `<img>` should have an `alt` property.
 If the image doesn't provide context to the page and is only there to make the page look pretty, the `alt` can be an empty string.
-If the image provides additional context to the page, it needs a thoughful description.
+If the image provides additional context to the page, it needs a thoughtful description.
 
 ```html
 <img src='' alt='' />
@@ -240,7 +240,7 @@ If the image provides additional context to the page, it needs a thoughful descr
 
 ### Background Images
 Most background images are used for decoration only and do not need alternate text.
-However, sometimes background image includes important information and/or provide context.
+However, sometimes background images include important information and/or provide context.
 Consider using a hidden div that contains a description of the image.
 
 ```html
@@ -262,7 +262,7 @@ Hide the svg via `aria-hidden="true"` and add a visually hidden element that des
 
 There are other approaches to make inline SVGs more accessible but they _aren't widely supported_:
 1. Adding `role="img"` and `aria-label="..."` to the `<svg>` node
-2. Adding a `<title>` or `<desc>` node inside of the svg that describes the image and assign an `id` atttribute to each. Then add `aria-labelledby` to the `svg`.
+2. Adding a `<title>` or `<desc>` node inside of the svg that describes the image and set an `id` attribute to each. Then add `aria-labelledby` to the `svg`.
   
 
 ```html
@@ -378,7 +378,7 @@ The button that performs the action of revealing a section should be annotated w
 
 # Focus
 
-There will be scenario where the focus need to be moved to a specific areao on the page, some of those reasons may be:
+There will be scenario where the focus need to be moved to a specific area on the page, some of those reasons may be:
 - Moving the focus to the invalid input
 - Moving the focus to a newly added element
 - New search results were loaded in an infinite scroll list 
@@ -387,7 +387,7 @@ Moving the focus to an input is easy with javascript via `$input.focus()` where 
 
 It gets a bit more challenging when the focus needs to be moved to a non-interactive component like a `<div>`.
 
-The simplest way is to add [tabindex](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/tabindex) attribute to that destination element.
+The simplest way is to add the [tabindex](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/tabindex) attribute to that destination element.
 ```html
 <div tabindex="-1">my content here</div>
 ```
@@ -396,8 +396,8 @@ This approach presents a few problems:
 - It may be read out loud which may not be a desired behavior 
 
   
-A way to move the focus, but not force the screen reader to read it outloud is to create a empty component that can receive focus.
-Then we can focus to that element and the blur out of it. That will effectively reset the focus to below the empty component.
+A way to move the focus, but not force the screen reader to read it outloud is to create an empty component that can receive focus.
+Then we can focus on that element and the blur out of it. That will effectively reset the focus to below the empty component.
 ```html
 <a class='visually-hidden' tabindex="-1" id='resetFocus'></a>
 <div tabindex="-1">my content here</div>
@@ -410,12 +410,12 @@ resetFocusAnchor.blur();
 
 By following this approach, the focus will be moved after the `<a>` so be primed for the next `Tab` keypress. 
 
-**Beware** that moving focus is only affective for keyboard navigation. The screen reader virtual cursor will not be impacted by this approach.
+**Beware** that moving focus is only effective for keyboard navigation. The screen reader virtual cursor will not be impacted by this approach.
 
 # Layout and the Tab Order
 
 We can specify the `tabindex` of each element in a page by assigning a number that indicates their tab order.
-However, that approach is hard to maintain, specially in a dynamic page.
+However, that approach is hard to maintain, especially in a dynamic page.
 
 A more forgiving way is to let the browser dictate the tab order. The tab order often follows the html structure:
 ```html
