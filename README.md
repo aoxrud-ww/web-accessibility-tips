@@ -35,16 +35,21 @@ Any time there is content that would benefit from announcing how many items are 
 ```html
 <!-- bad -->
 <div>
-  <div>item 1</div>
-  <div>item 2</div>
+  <div>Drums</div>
+  <div>Drumsticks</div>
 </div>
+```
+> Announcement: Drums. Drumsticks.
 
+```html
 <!-- good -->
 <ul>
-  <li>item 1</li>
-  <li>item 2</li>
+  <li>Drums</li>
+  <li>Drumsticks</li>
 </ul>
 ```
+> Announcement: list 2 items, Drums, 1 of 2. Drumsticks, 2 of 2, end of list.
+
 
 ### Links and Buttons
 Non-interactive elements like `div` with click listeners are not recognized by screen readers and will be skipped.
@@ -53,49 +58,76 @@ Non-interactive elements like `div` with click listeners are not recognized by s
 
 ```html
 <!-- bad -->
-<div onclick="handleClick()">not be detected by screen reader/keyboard</div>
-
-<!-- good -->
-<a href=''>read more</a>
-<button onclick="handleClick()">detected as interactive element</button>
+<div onclick="handleClick()">not be detected as interactive element by screen reader/keyboard</div>
 ```
+> Announcement: will not be announced as an interactive element.
+
+```html
+<!-- good -->
+<a href='https://example.com'>learn more about drums</a>
+```
+> Announcement: link, learn more about drums
+
+
+```html
+<!-- good -->
+<button onclick="handleClick()">learn more about drums</button>
+```
+> Announcement: learn more about drums, button
+
 
 ### Landmarks
 Using the correct landmark elements helps assistive technologies navigate the page more efficiently.
 See full [list of available landmarks in HTML5](https://www.w3.org/TR/wai-aria-practices/examples/landmarks/HTML5.html)
 ```html
 <!-- bad -->
-<div class="sidebar"></div>
-<div class="main-content"></div>
-
-<!-- good -->
-<aside class="sidebar"></aside>
-<main class="main-content"></main>
+<div class="sidebar">My sidebar</div>
+<div class="main-content">My content</div>
 ```
+
+```html
+<!-- good -->
+<aside class="sidebar">My sidebar</aside>
+```
+> Announcement: complementary, My sidebar
+
+```html
+<!-- good -->
+<main class="main-content">My content</main>
+```
+> Announcement: main, My content
+
 
 ### Navigation
 ```html
 <!-- bad -->
 <div class="navigation">
-  <a href=''>Link 1</a>
+  <a href="https://example.com">Example</a>
 </div>
+```
+> Announcement: link, Example
 
+```html
 <!-- good -->
-<nav class="sidebar">
-  <a href=''>Link 1</a>
+<nav class="navigation">
+  <a href="https://example.com">Example</a>
 </nav>
+```
+> Announcement: navigation. link, Example. end of navigation
 
+```html
 <!-- better -->
-<nav class="sidebar">
-  <ul aria-label="Main Navigation">
-    <li><a href=''>Link 1</a></li>
+<nav class="navigation">
+  <ul aria-label="About our company">
+    <li><a href="https://example.com">Example</a></li>
   </ul>
 </nav>
 ```
+> Announcement: navigation. list About our company 1 item. link, Example. end of navigation
 
 ## The `role` attribute
 Most of the semantic HTML elements can be expressed as non-standard elements (ie. `<div>`, `<span>`, etc...) elements with a specific `role` attribute.
-However, more often than not, screen readers don't handle these "faked" elements the same way. 
+However, more often than not, screen readers don't handle these "mocked" elements the same way. 
 Which leads one to add additional functionality (keyboard shortcuts, announcements) to get the same behavior as a semantic element.
 
 Rule of thumb: if there is a semantic element for the purpose, use semantic element.
@@ -118,6 +150,7 @@ We can provide additonal context to a label without making it visible. It keeps 
 ```html
 <a href='#'>View more <span class='visually-hidden'>products in Healthy Snacks</span></a>
 ```
+> Announcement: link, View more products in Healthy Snacks
 
 The `visually-hidden` css class moves the content out of the view so visual users will not see it, but screen readers will.
 
@@ -143,6 +176,7 @@ The [aria-label](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA
 ```html
 <a href='/product/chocolate' aria-label="Add chocolate to cart">Add to Cart</a>
 ```
+> Announcement: link, Add chocolate to cart
 
 
 ### aria-describedby and aria-labelledby
@@ -155,6 +189,7 @@ The [aria-describedby](https://developer.mozilla.org/en-US/docs/Web/Accessibilit
 <div id='product-title'>Chocolate</div>
 <a href='/product/chocolate' aria-describedby="product-title">Add to Cart</a>
 ```
+> Announcement: Add to Cart, Chocolate
 
 > aria-describedby will announce something like: "Add to cart, Chocolate"
 
@@ -168,8 +203,7 @@ The [aria-labelledby](https://developer.mozilla.org/en-US/docs/Web/Accessibility
     <input type="text" aria-labelledby="myBillingId myNameId"/>
 </div>
 ```
-
-> When moving the focus to the Name input, the aria-labelledby will announce: "input, text, Billing Name"
+> Announcement on the input: Billing Name, edit text
 
 
 ## Hiding Elements
@@ -183,6 +217,8 @@ To hide elements from screen reader use the [aria-hidden](https://developer.mozi
   <p>Children will also be hidden</p>
 </div>
 ```
+
+Using css's `display: none;` property will hide it visually and from screen readers.
 
 ## Images
 
@@ -207,31 +243,34 @@ Most background images are used for decoration only and do not need alternate te
 However, sometimes background image includes important information and/or provide context.
 Consider using a hidden div that contains a description of the image.
 
-Alternatively, refactor the code to use `<img>` tags.
-
 ```html
 <div style="background-image: url(...)">
   <span class='visually-hidden'>description of background image</span>
 </div>
 ```
 
-### SVG
+Alternatively, refactor the code to use `<img>` tags.
 
+### Inline SVG
 
-1. Add a `<title>` node inside of the svg that describes the image.
-  
-
-```html
-<svg>
-  <title>description of svg</title>
-</svg>
-```
-
-1. Hide the svg via `aria-hidden="true"` and add a visually hidden element that describes it.
+Hide the svg via `aria-hidden="true"` and add a visually hidden element that describes it.
 ```html
 <span class='visually-hidden'>description of svg</span>
 <svg aria-hidden='true'></svg>
 ```
+
+
+There are other approaches to make inline SVGs more accessible but they _aren't widely supported_:
+1. Adding `role="img"` and `aria-label="..."` to the `<svg>` node
+2. Adding a `<title>` or `<desc>` node inside of the svg that describes the image and assign an `id` atttribute to each. Then add `aria-labelledby` to the `svg`.
+  
+
+```html
+<svg role="img" aria-labelledby="svg-title svg-desc">
+  <desc id='svg-desc'>drumsticks placed on top of a snare drum</desc>
+</svg>
+```
+> Announcement: drumsticks placed on top of a snare drum, image
 
 
 # Input Labels
@@ -240,14 +279,15 @@ Each input should have a `<label>` associated with it:
 <label for="firstname">First name:</label>
 <input type="text" name="firstname" id="firstname">
 ```
+> Announcement: First name, edit text
 
 Sometimes we don't want to visually display the `<label>` so we can **visually hide** the element using our previously described `visually-hidden` class:
 
 ```html
-<label for="firstname" class="visually-hidden">First name:</label>
-<input type="text" name="firstname" id="firstname">
+<label for="lastname" class="visually-hidden">Last name:</label>
+<input type="text" name="lastname" id="lastname">
 ```
-
+> Announcement: Last name, edit text
 
 # Input Validation
 
@@ -257,6 +297,7 @@ Instructing screen readers that a specific input is invalid can be done via the 
 ```html
 <input aria-invalid='true' />
 ```
+> Announcement: invalid data, edit text
 
 There are exceptions where the inputs are styled as visually disabled and they don't have the `disabled` attribute declared.
 Assistive technologies wouldn't announce the disabled styling so the disabled state should be indicated using the [aria-disabled](https://www.digitala11y.com/aria-disabled-state/) attribute. 
@@ -267,6 +308,7 @@ Maybe clicking on the disabled button triggers a validation announcement.
 ```html
 <button aria-disabled='true' class='button--disabled'>Save</button>
 ```
+> Announcement: Save, dimmed, button
 
 # Alerts 
 
@@ -277,9 +319,8 @@ There are many [types of alerts and live regions](https://developer.mozilla.org/
 
 ```html
 <p role="alert">There was an error saving your changes</p>
-<p role="status">Product XYZ has been added to cart</p>
 ```
-
+> Announcement: There was an error saving your changes
 
 
 # Live Regions
@@ -299,6 +340,7 @@ function updateResultsCount(count, searchTerm) {
 
 updateResultsCount(10, "apple")
 ```
+> Announcement: Found 10 results for search term: apple
 
 **Beware** that if you trigger multiple announcements that contain the same message, some screen readers only announce the first one and ignore subsequent ones.
 To avoid this announced-once issue, please ensure that each alert message is different.
@@ -323,11 +365,16 @@ The button that performs the action of revealing a section should be annotated w
 <!-- collapsed state -->
 <button aria-haspopup="true" aria-expanded="false">Learn more about foobar</button>
 <div class="collapsed"></div>
+```
+> Announcement: learn more about foobar, collapsed, pop-up button
 
+```html
 <!-- expanded state -->
 <button aria-haspopup="true" aria-expanded="true">Learn more about foobar</button>
 <div class="expanded">Lorem ipsum...</div>
 ```
+> Announcement: learn more about foobar, expanded, pop-up button
+
 
 # Focus
 
@@ -362,6 +409,8 @@ resetFocusAnchor.blur();
 ```
 
 By following this approach, the focus will be moved after the `<a>` so be primed for the next `Tab` keypress. 
+
+**Beware** that moving focus is only affective for keyboard navigation. The screen reader virtual cursor will not be impacted by this approach.
 
 # Layout and the Tab Order
 
@@ -422,10 +471,10 @@ Consider grouping related elements together to maintain a sensible tab order:
 </div>
 ```
 
-
 ## Tooling
 - [eslint-plugin-jsx-a11y](https://github.com/jsx-eslint/eslint-plugin-jsx-a11y) - Static AST checker for accessibility rules on JSX elements.
   - informs about missing properties and/or their values
 - [Chrome Lighthouse](https://developers.google.com/web/tools/lighthouse) - Audits for performance, accessibility, progressive web apps, SEO and more.
   - helps
+- [axe DevTools](https://chrome.google.com/webstore/detail/axe-devtools-web-accessib/lhdoppojpmngadmnindnejefpokejbdd?hl=en-US) - Audits for accessibility issues
 
